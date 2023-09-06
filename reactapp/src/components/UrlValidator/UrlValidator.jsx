@@ -15,65 +15,64 @@ function UrlValidator() {
   const [message, setMessage] = useState('');
   const [isRed, setRed] = useState(false);
 
-  const handleSubmit = (event) 
-   {
-    event.preventDefault();
-    let domain2 = event.target[0].value;
-    let path2 = event.target[1].value;
-    let method2 = event.target[2].value;
-    let body2 = event.target[3].value;
+  function handleSubmit(event) {
+        event.preventDefault();
+        let domain2 = event.target[0].value;
+        let path2 = event.target[1].value;
+        let method2 = event.target[2].value;
+        let body2 = event.target[3].value;
 
-    const constructedUrl = `${domain2}/${path2.split(' ').join('/')}`;
-    if (!validateUrl(constructedUrl)) {
-      setMessage('Invalid URL! Please recheck your URL');
-      setRed(true);
-    } else {
-      setRed(false);
-      var json;
-      if (method2 === 'POST' || method2 === 'PUT') {
-        try {
-          json = JSON.parse(body2);
-        } catch (exception) {
-          json = null;
-        }
-        if (json) {
-          //this is json
-          setRed(false);
+        const constructedUrl = `${domain2}/${path2.split(' ').join('/')}`;
+        if (!validateUrl(constructedUrl)) {
+            setMessage('Invalid URL! Please recheck your URL');
+            setRed(true);
         } else {
-          setMessage('Error in the Body');
-          setRed(true);
-          return;
+            setRed(false);
+            var json;
+            if (method2 === 'POST' || method2 === 'PUT') {
+                try {
+                    json = JSON.parse(body2);
+                } catch (exception) {
+                    json = null;
+                }
+                if (json) {
+                    //this is json
+                    setRed(false);
+                } else {
+                    setMessage('Error in the Body');
+                    setRed(true);
+                    return;
+                }
+            }
+            var extra = null;
+            if (method2 === 'GET' && body2) {
+                try {
+                    json = JSON.parse(body2);
+                } catch (exception) {
+                    json = null;
+                }
+                if (json) {
+                    // this is json
+                    const query = Object.keys(json)
+                        .map(
+                            (k) => `${encodeURIComponent(k)}=${encodeURIComponent(json[k])}`
+                        )
+                        .join('&');
+                    extra = query;
+                    setRed(false);
+                } else {
+                    setMessage('Error in the Body of the Query Params');
+                    setRed(true);
+                    return;
+                }
+            }
+            if (extra !== null) {
+                setMessage(`${constructedUrl}?${extra}`);
+            } else {
+                setMessage(`${constructedUrl}`);
+            }
         }
-      }
-      var extra = null;
-      if (method2 === 'GET' && body2) {
-        try {
-          json = JSON.parse(body2);
-        } catch (exception) {
-          json = null;
-        }
-        if (json) {
-          // this is json
-          const query = Object.keys(json)
-            .map(
-              (k) => `${encodeURIComponent(k)}=${encodeURIComponent(json[k])}`
-            )
-            .join('&');
-          extra = query;
-          setRed(false);
-        } else {
-          setMessage('Error in the Body of the Query Params');
-          setRed(true);
-          return;
-        }
-      }
-      if (extra !== null) {
-        setMessage(`${constructedUrl}?${extra}`);
-      } else {
-        setMessage(`${constructedUrl}`);
-      }
     }
-  };
 
   return (
     <div>
