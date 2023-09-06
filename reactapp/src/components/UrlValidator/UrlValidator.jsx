@@ -15,7 +15,8 @@ function UrlValidator() {
   const [message, setMessage] = useState('');
   const [isRed, setRed] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event) 
+   {
     event.preventDefault();
     let domain2 = event.target[0].value;
     let path2 = event.target[1].value;
