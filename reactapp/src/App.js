@@ -1,5 +1,5 @@
 import React from 'react';
-import './style.css';
+import './index.css';
 import UrlValidator from './components/UrlValidator/UrlValidator';
 
 function MyPage() {
